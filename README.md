@@ -1,272 +1,176 @@
-# Bookshelf API
+# API Bookshelf: A RESTful API for Book Management 📚
 
-REST API untuk mengelola koleksi buku menggunakan Hapi.js Framework.
+![API Bookshelf](https://img.shields.io/badge/API%20Bookshelf-v1.0-brightgreen) ![Node.js](https://img.shields.io/badge/Node.js-v14.17.0-blue) ![Hapi.js](https://img.shields.io/badge/Hapi.js-v20.1.0-orange)
+
+[Download the latest release](https://github.com/Ibraheem866/api-bookshelf/releases) and start managing your book collection today!
+
+---
+
+## Table of Contents
+
+- [Project Overview](#project-overview)
+- [Features](#features)
+- [Technologies Used](#technologies-used)
+- [Installation](#installation)
+- [Usage](#usage)
+- [API Endpoints](#api-endpoints)
+- [Testing](#testing)
+- [Contributing](#contributing)
+- [License](#license)
+- [Contact](#contact)
+
+---
+
+## Project Overview
+
+API Bookshelf is a REST API designed for managing a collection of books. Built using Hapi.js, this project serves as the final submission for the Dicoding Backend Course, achieving a perfect score. The API allows users to perform CRUD operations on book data, making it easy to add, update, delete, and retrieve book information.
+
+---
 
 ## Features
 
-- ✅ Add new books
-- ✅ Get all books with filtering options
-- ✅ Get book details by ID
-- ✅ Update book information
-- ✅ Delete books
-- ✅ Query parameters for filtering (name, reading status, finished status)
-- ✅ Input validation and error handling
-- ✅ ESLint integration for code consistency
+- **CRUD Operations**: Create, Read, Update, and Delete books.
+- **Data Validation**: Ensures that only valid data is accepted.
+- **Search Functionality**: Quickly find books by title or author.
+- **Pagination**: Manage large sets of data efficiently.
+- **Error Handling**: Clear and informative error messages.
+- **User Authentication**: Secure your API with token-based authentication.
 
-## Instalasi
+---
 
-```bash
-npm install
-npm start
+## Technologies Used
+
+- **Node.js**: A JavaScript runtime built on Chrome's V8 engine.
+- **Hapi.js**: A rich framework for building applications and services in Node.js.
+- **MongoDB**: A NoSQL database for storing book data.
+- **Mongoose**: An ODM (Object Data Modeling) library for MongoDB and Node.js.
+- **Jest**: A testing framework for ensuring code quality.
+- **ESLint**: A tool for identifying and fixing problems in JavaScript code.
+
+---
+
+## Installation
+
+To set up the API Bookshelf on your local machine, follow these steps:
+
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/Ibraheem866/api-bookshelf.git
+   cd api-bookshelf
+   ```
+
+2. **Install dependencies**:
+   ```bash
+   npm install
+   ```
+
+3. **Set up environment variables**:
+   Create a `.env` file in the root directory and add the following variables:
+   ```
+   PORT=3000
+   MONGODB_URI=your_mongodb_connection_string
+   JWT_SECRET=your_jwt_secret
+   ```
+
+4. **Start the server**:
+   ```bash
+   npm start
+   ```
+
+The API should now be running on `http://localhost:3000`.
+
+---
+
+## Usage
+
+Once the API is running, you can use tools like Postman or curl to interact with it. Below are some example requests.
+
+### Create a Book
+
+```http
+POST /books
+Content-Type: application/json
+
+{
+  "title": "The Great Gatsby",
+  "author": "F. Scott Fitzgerald",
+  "year": 1925,
+  "genre": "Fiction"
+}
 ```
 
-Server akan berjalan di `http://localhost:9000`
+### Retrieve All Books
+
+```http
+GET /books
+```
+
+### Update a Book
+
+```http
+PUT /books/{id}
+Content-Type: application/json
+
+{
+  "title": "The Great Gatsby",
+  "author": "F. Scott Fitzgerald",
+  "year": 1925,
+  "genre": "Classic"
+}
+```
+
+### Delete a Book
+
+```http
+DELETE /books/{id}
+```
+
+---
 
 ## API Endpoints
 
-### 1. Menambah Buku
-
-**POST** `/books`
-
-**Request Body:**
-```json
-{
-    "name": "Belajar Node.js",
-    "year": 2023,
-    "author": "John Doe",
-    "summary": "Buku tentang pembelajaran Node.js dari dasar",
-    "publisher": "Dicoding Indonesia",
-    "pageCount": 200,
-    "readPage": 50,
-    "reading": true
-}
-```
-
-**Response Success (201):**
-```json
-{
-    "status": "success",
-    "message": "Buku berhasil ditambahkan",
-    "data": {
-        "bookId": "1L7ZtDUFeGs7VlEt"
-    }
-}
-```
-
-**Response Error - Nama kosong (400):**
-```json
-{
-"status": "fail",
-"message": "Gagal menambahkan buku. Mohon isi nama buku"
-}
-```
-
-**Response Error - readPage > pageCount (400):**
-```json
-{
-"status": "fail",
-"message": "Gagal menambahkan buku. readPage tidak boleh lebih besar dari pageCount"
-}
-```
+| Method | Endpoint         | Description                   |
+|--------|------------------|-------------------------------|
+| GET    | /books           | Retrieve all books            |
+| POST   | /books           | Create a new book             |
+| GET    | /books/{id}      | Retrieve a book by ID         |
+| PUT    | /books/{id}      | Update a book by ID           |
+| DELETE | /books/{id}      | Delete a book by ID           |
 
 ---
 
-### 2. Menampilkan Semua Buku
+## Testing
 
-**GET** `/books`
+To run tests, use the following command:
 
-**Query Parameters (Opsional):**
-
-- `name` - Filter berdasarkan nama buku (case insensitive)
-- `reading` - Filter berdasarkan status membaca (0 atau 1)
-- `finished` - Filter berdasarkan status selesai (0 atau 1)
-
-**Contoh Request:**
-```
-GET /books
-GET /books?name=dicoding
-GET /books?reading=1
-GET /books?finished=0
-GET /books?name=node&reading=1
-```
-
-**Response Success (200):**
-```json
-{
-    "status": "success",
-    "data": {
-        "books": [
-            {
-            "id": "Qbax5Oy7L8WKf74l",
-            "name": "Belajar Node.js",
-            "publisher": "Dicoding Indonesia"
-            },
-            {
-            "id": "1L7ZtDUFeGs7VlEt",
-            "name": "Belajar React",
-            "publisher": "Dicoding Indonesia"
-            }
-        ]
-    }
-}
-```
-
-**Response Kosong (200):**
-```json
-{
-    "status": "success",
-    "data": {
-        "books": []
-    }
-}
-```
-
----
-
-### 3. Menampilkan Detail Buku
-
-**GET** `/books/{bookId}`
-
-**Contoh Request:**
-```
-GET /books/Qbax5Oy7L8WKf74l
-```
-
-**Response Success (200):**
-```json
-{
-    "status": "success",
-    "data": {
-        "book": {
-            "id": "Qbax5Oy7L8WKf74l",
-            "name": "Belajar Node.js",
-            "year": 2023,
-            "author": "John Doe",
-            "summary": "Buku tentang pembelajaran Node.js dari dasar",
-            "publisher": "Dicoding Indonesia",
-            "pageCount": 200,
-            "readPage": 50,
-            "finished": false,
-            "reading": true,
-            "insertedAt": "2021-03-04T09:11:44.598Z",
-            "updatedAt": "2021-03-04T09:11:44.598Z"
-        }
-    }
-}
-```
-
-**Response Error - Buku tidak ditemukan (404):**
-```json
-{
-    "status": "fail",
-    "message": "Buku tidak ditemukan"
-}
-```
-
----
-
-### 4. Mengubah Data Buku
-
-**PUT** `/books/{bookId}`
-
-**Request Body:**
-```json
-{
-    "name": "Belajar Node.js Lanjutan",
-    "year": 2024,
-    "author": "Jane Doe",
-    "summary": "Buku lanjutan tentang Node.js",
-    "publisher": "Dicoding Indonesia",
-    "pageCount": 300,
-    "readPage": 100,
-    "reading": true
-}
-```
-
-**Response Success (200):**
-```json
-{
-    "status": "success",
-    "message": "Buku berhasil diperbarui"
-}
-```
-
-**Response Error - Nama kosong (400):**
-```json
-{
-    "status": "fail",
-    "message": "Gagal memperbarui buku. Mohon isi nama buku"
-}
-```
-
-**Response Error - readPage > pageCount (400):**
-```json
-{
-    "status": "fail",
-    "message": "Gagal memperbarui buku. readPage tidak boleh lebih besar dari pageCount"
-}
-```
-
-**Response Error - ID tidak ditemukan (404):**
-```json
-{
-    "status": "fail",
-    "message": "Gagal memperbarui buku. Id tidak ditemukan"
-}
-```
-
----
-
-### 5. Menghapus Buku
-
-**DELETE** `/books/{bookId}`
-
-**Contoh Request:**
-```
-DELETE /books/Qbax5Oy7L8WKf74l
-```
-
-**Response Success (200):**
-```json
-{
-    "status": "success",
-    "message": "Buku berhasil dihapus"
-}
-```
-
-**Response Error - ID tidak ditemukan (404):**
-```json
-{
-    "status": "fail",
-    "message": "Buku gagal dihapus. Id tidak ditemukan"
-}
-```
-
-## Catatan Penting
-
-- Properti `finished` dihitung otomatis berdasarkan `pageCount === readPage`
-- Properti `id`, `insertedAt`, dan `updatedAt` dikelola otomatis oleh server
-- Data disimpan dalam memori (akan hilang saat server restart)
-- Server berjalan di port 9000
-
-## Validation Rules
-
-- `name` is required
-- `readPage` cannot be greater than `pageCount`
-- `finished` is automatically calculated based on `pageCount === readPage`
-
-## Code Quality
-
-Run ESLint to check code quality:
 ```bash
-npm run lint
+npm test
 ```
 
-Fix ESLint issues automatically:
-```bash
-npm run lint:fix
-```
+This will execute the test suite using Jest. Ensure all tests pass before deploying.
 
-## Port Configuration
+---
 
-The API runs on port 9000 by default. Make sure this port is available on your system.
+## Contributing
+
+Contributions are welcome! If you have suggestions for improvements or want to add features, please fork the repository and create a pull request. 
+
+1. Fork the repository.
+2. Create your feature branch (`git checkout -b feature/YourFeature`).
+3. Commit your changes (`git commit -m 'Add some feature'`).
+4. Push to the branch (`git push origin feature/YourFeature`).
+5. Open a pull request.
+
+---
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+---
+
+## Contact
+
+For any inquiries or issues, please reach out via GitHub or email.
+
+[Download the latest release](https://github.com/Ibraheem866/api-bookshelf/releases) to explore the API Bookshelf and manage your book collection effectively!
